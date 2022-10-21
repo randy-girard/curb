@@ -2,14 +2,16 @@ require 'mkmf'
 
 dir_config('curl')
 
-if find_executable('curl-config')
-  $CFLAGS << " #{`curl-impersonate-chrome-config --cflags`.strip} -g"
+curl_config_path = `which curl-impersonate-chrome-config`
+
+if find_executable(curl_config_path)
+  $CFLAGS << " #{`#{curl_config_path} --cflags`.strip} -g"
   if ENV['STATIC_BUILD']
-    $LIBS << " #{`curl-impersonate-chrome-config --static-libs`.strip}"
+    $LIBS << " #{`#{curl_config_path} --static-libs`.strip}"
   else
-    $LIBS << " #{`curl-impersonate-chrome-config --libs`.strip}"
+    $LIBS << " #{`#{curl_config_path} --libs`.strip}"
   end
-  ca_bundle_path=`curl-impersonate-chrome-config --ca`.strip
+  ca_bundle_path=`#{curl_config_path} --ca`.strip
   if !ca_bundle_path.nil? and ca_bundle_path != ''
     $defs.push( %{-D HAVE_CURL_CONFIG_CA} )
     $defs.push( %{-D CURL_CONFIG_CA='#{ca_bundle_path.inspect}'} )
