@@ -2,7 +2,7 @@ require 'mkmf'
 
 dir_config('curl')
 
-curl_config_path = `which curl-impersonate-chrome-config`
+curl_config_path = `which curl-impersonate-chrome-config`.chomp
 
 if find_executable(curl_config_path)
   $CFLAGS << " #{`#{curl_config_path} --cflags`.strip} -g"
